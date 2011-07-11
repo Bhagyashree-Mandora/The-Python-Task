@@ -17,10 +17,12 @@ def show():
 #First Dynamic Part
 	connection = Connection("localhost") 
 	db = connection.task 
+	i=1
 	for d in db.task.find({"status": "Not Done"}):
 		t.write("<tr><form action=\"../update/task.html\" method=\"POST\">    <td scope=\"col\">")
 		#automated number here
-		t.write("1")
+		t.write(`i`)
+		i=i+1
 		t.write("</td>	<input name=\"TaskId\" type=\"hidden\" value=\"")
 		t.write(`d["task_id"]`)
   		t.write("\"><td scope=\"col\">")
@@ -33,10 +35,12 @@ def show():
 	f3=part3.readlines()
 
 #Second Dynamic Part
+	i=1
 	for d in db.task.find({"status": "Done"}):
 		t.write("<tr>   <td scope=\"col\">")
 		#automated number here
-		t.write("1")
+		t.write(`i`)
+		i=i+1
 		t.write("</td>    <td scope=\"col\">")
 		t.write(d["task_name"])
 		t.write("</td></tr>")
@@ -47,8 +51,8 @@ def show():
 	
 	t.close()
 	part1.close()
-	part1.close()
-	part1.close()
+	part2.close()
+	part3.close()
 	return redirect(url_for("static",filename="task.html"))
 	
 @app.route("/update/task.html",methods=['POST'])
@@ -56,11 +60,11 @@ def update():
 	#print "I came in Update"
 	#if request.method == 'POST':
 	tobedone=request.form['TaskId']
-	print "to be done is " + tobedone
+	#print "to be done is " + tobedone
 	connection=Connection("127.0.0.1")
 	db=connection.task
 	for d in db.task.find({"task_id": int(tobedone)}):
-		print d
+		#print d
 		db.task.update({"task_id": int(tobedone) }, {"$set":{"status":"Done"}})
 	#	print "update sucessfull"
 	return redirect("")	
@@ -68,7 +72,10 @@ def update():
 @app.route("/insert/task.html",methods=['POST'])
 def insert():
 	toadd=request.form['newtask']
-	print "to be added is " + toadd
+	if toadd=="":
+#		print "User tried to insert blank task"
+		return redirect("")	
+	#print "to be added is " + toadd
 	connection=Connection("127.0.0.1")
 	db=connection.task	
 	ls=[]
