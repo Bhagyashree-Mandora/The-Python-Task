@@ -81,7 +81,10 @@ def insert():
 	ls=[]
 	for d in db.task.find():
 		ls.append(d["task_id"])
-	newid=int(max(ls))+1
+	if len(ls)>0:
+		newid=int(max(ls))+1
+	else:
+		newid=1
 	db.task.save({"user_id":001, "task_id":newid, "task_name":toadd, "status":"Not Done", "description":"", "priority":1})
 	return redirect("")	
 
